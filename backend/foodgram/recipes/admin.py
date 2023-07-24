@@ -4,7 +4,7 @@ from .models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 
 
 class IngredientAdmin(admin.ModelAdmin):
-    """ Админ панель управление ингридиентами """
+    """ Админ панель управление ингридиентами. """
     list_display = ('name', 'measurement_unit')
     search_fields = ('name', )
     list_filter = ('name', )
@@ -12,7 +12,7 @@ class IngredientAdmin(admin.ModelAdmin):
 
 
 class TagAdmin(admin.ModelAdmin):
-    """ Админ панель управление тегами """
+    """ Админ панель управление тегами. """
     list_display = ('name', 'color', 'slug')
     search_fields = ('name', 'slug')
     list_filter = ('name', )
@@ -20,7 +20,7 @@ class TagAdmin(admin.ModelAdmin):
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    """ Админ панель управление рецептами """
+    """ Админ панель управление рецептами. """
     list_display = ('name', 'author', 'favorites')
     search_fields = ('author', 'name')
     list_filter = ('tags', )
@@ -36,7 +36,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
 
 class FavoriteAdmin(admin.ModelAdmin):
-    """ Админ панель управление подписками """
+    """ Админ панель управление подписками. """
     list_display = ('user', 'recipe')
     list_filter = ('user', 'recipe')
     search_fields = ('user', 'recipe')
@@ -44,7 +44,7 @@ class FavoriteAdmin(admin.ModelAdmin):
 
 
 class ShoppingCartAdmin(admin.ModelAdmin):
-    """ Админ панель списка покупок """
+    """ Админ панель списка покупок. """
     list_display = ('recipe', 'user')
     list_filter = ('recipe', 'user')
     search_fields = ('user', )
