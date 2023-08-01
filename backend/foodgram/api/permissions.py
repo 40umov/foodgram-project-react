@@ -4,17 +4,6 @@ from rest_framework.permissions import SAFE_METHODS, BasePermission
 User = get_user_model()
 
 
-class IsAdmin(BasePermission):
-    """
-    Пользователь является супрюзером или имеет роль администратора.
-    """
-    def has_permission(self, request, view):
-        return (
-            request.user.is_authenticated
-            and request.user.is_admin
-        )
-
-
 class IsAdminOrReadOnly(BasePermission):
     """
     Пользователь является супрюзером или имеет роль администратора.
