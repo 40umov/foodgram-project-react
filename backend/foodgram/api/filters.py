@@ -35,7 +35,7 @@ class RecipeFilter(FilterSet):
         return
 
 
-class IngredientsFilter(FilterSet):
+class IngredientFilter(FilterSet):
     """ Фильтр ингредиентов. """
     search_param = 'name'
 
