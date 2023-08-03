@@ -16,7 +16,6 @@ from .pagination import CustomPagination
 from .permissions import IsAdminOrReadOnly, IsAuthorModeratorAdminOrReadOnly
 from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
                             ShoppingCart, Tag)
-
 from .serializers import (CreateRecipeSerializer, IngredientSerializer,
                           RecipeReadSerializer, RecipeShortSerializer,
                           SubscribeListSerializer, TagSerializer,
@@ -151,9 +150,8 @@ class UserViewSet(UserViewSet):
         permission_classes=[IsAuthenticated],
     )
     def subscribe(self, request, **kwargs):
-        user = request.user
-        author_id = self.kwargs.get('id')
-        author = get_object_or_404(User, id=author_id)
+        user = get_object_or_404(User, username=request.user)
+        author = get_object_or_404(User, id=self.kwargs.get('id'))
 
         if request.method == 'POST':
             serializer = SubscribeListSerializer(

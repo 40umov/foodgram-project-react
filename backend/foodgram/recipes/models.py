@@ -5,7 +5,6 @@ from django.core.validators import (MaxValueValidator, MinValueValidator,
 from django.db import models
 from django.db.models import UniqueConstraint
 
-
 User = get_user_model()
 
 
@@ -25,13 +24,19 @@ class Ingredient(models.Model):
         ordering = ('name',)
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('name', 'measurement_unit'),
+                name='unique_ingredient'
+            ),
+        )
 
     def __str__(self):
         return f'{self.name}, {self.measurement_unit}'
 
 
 class Tag(models.Model):
-    """ Модель тегов. """
+    """ Модель тегов."""
     name = models.CharField(
         verbose_name='Название тега',
         max_length=200,
@@ -185,6 +190,17 @@ class IngredientRecipe(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(100)],
         verbose_name='Количество ингредиента'
     )
+
+    class Meta:
+        ordering = ('-id', )
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты рецепта'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('ingredient', 'recipe'),
+                name='unique_ingredients_recipe'
+            ),
+        )
 
     def __str__(self):
         return (
