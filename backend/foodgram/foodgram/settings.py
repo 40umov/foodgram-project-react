@@ -24,13 +24,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'i^_!daw#c+k(5&67d*)*bjp#qc#!8y0oz@xt$4n7tknbj7dhr4'
+# SECRET_KEY = 'i^_!daw#c+k(5&67d*)*bjp#qc#!8y0oz@xt$4n7tknbj7dhr4'
+SECRET_KEY = os.getenv('TOKEN', 'default-value')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', default=True)
 
 ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', default='*')]
 
+AUTH_USER_MODEL = 'users.User'
 
 # Application definition
 
@@ -44,6 +47,7 @@ INSTALLED_APPS = [
     'colorfield',
     'django_filters',
     'djoser',
+    'drf_yasg',
     'rest_framework',
     'rest_framework.authtoken',
     'api.apps.ApiConfig',
@@ -112,6 +116,31 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+}
+
+DJOSER = {
+    "SERIALIZERS": {
+        "user_create": "api.serializers.UserCreateSerializer",
+        "user": "api.serializers.UserSerializer",
+        "current_user": "api.serializers.UserSerializer",
+    },
+
+    "PERMISSIONS": {
+        "user": ["djoser.permissions.CurrentUserOrAdminOrReadOnly"],
+        "user_list": ["rest_framework.permissions.IsAuthenticatedOrReadOnly"],
+    },
+
+    "HIDE_USERS": False,
+}
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -133,12 +162,14 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-AUTH_USER_MODEL = 'users.User'
 
 # django-filter settings
 
-FILTERS_BACKEND = 'django_filters.rest_framework.backends.DjangoFilterBackend'
+# FILTERS_BACKEND = 'django_filters.rest_framework.backends.DjangoFilterBackend'
 
-DEFAULT_FILTER_BACKENDS = [
-    FILTERS_BACKEND,
-]
+# DEFAULT_FILTER_BACKENDS = [
+#     FILTERS_BACKEND,
+# ]
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
