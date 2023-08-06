@@ -24,7 +24,7 @@ from .serializers import (CreateRecipeSerializer, IngredientSerializer,
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
-    """ Вывод ингредиентов. """
+    ''' Вывод ингредиентов. '''
     serializer_class = IngredientSerializer
     queryset = Ingredient.objects.all()
     permission_classes = (IsAdminOrReadOnly, )
@@ -35,7 +35,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class TagViewSet(viewsets.ModelViewSet):
-    """ Вывод тегов. """
+    ''' Вывод тегов. '''
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (IsAdminOrReadOnly, )
@@ -60,28 +60,28 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True,
-        methods=["post", "delete"],
+        methods=['post', 'delete'],
         permission_classes=[IsAuthenticated],
     )
     def favorite(self, request, pk):
-        if request.method == "POST":
+        if request.method == 'POST':
             return self.add_to(Favorite, request.user, pk)
         return self.delete_from(Favorite, request.user, pk)
 
     @action(
         detail=True,
-        methods=["post", "delete"],
+        methods=['post', 'delete'],
         permission_classes=[IsAuthenticated],
     )
     def shopping_cart(self, request, pk):
-        if request.method == "POST":
+        if request.method == 'POST':
             return self.add_to(ShoppingCart, request.user, pk)
         return self.delete_from(ShoppingCart, request.user, pk)
 
     def add_to(self, model, user, pk):
         if model.objects.filter(user=user, recipe__id=pk).exists():
             return Response(
-                {"errors": "Рецепт добавлен"},
+                {'errors': 'Рецепт добавлен'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         recipe = get_object_or_404(Recipe, id=pk)
@@ -95,7 +95,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             obj.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(
-            {"errors": "Рецепт удален"},
+            {'errors': 'Рецепт удален'},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -114,7 +114,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 'ingredient__measurement_unit',
                 'recipe__image',
             )
-            .annotate(amount=Sum("amount"))
+            .annotate(amount=Sum('amount'))
         )
 
         today = datetime.today()
@@ -122,11 +122,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 f'Список покупок для: {user.get_full_name()}\n\n'
                 'Дата: %s. %s. %s. \n\n' % (today.day, today.month, today.year)
         )
-        shopping_list += "\n".join(
+        shopping_list += '\n'.join(
             [
-                f'- {ingredient["ingredient__name"]} '
-                f'({ingredient["ingredient__measurement_unit"]})'
-                f' - {ingredient["amount"]}'
+                f"- {ingredient['ingredient__name']} "
+                f"({ingredient['ingredient__measurement_unit']})"
+                f" - {ingredient['amount']}"
                 for ingredient in ingredients
             ]
         )

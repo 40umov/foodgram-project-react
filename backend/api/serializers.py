@@ -6,7 +6,7 @@ from drf_extra_fields.fields import Base64ImageField
 from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag
 from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import IntegerField, SerializerMethodField
+from rest_framework.fields import SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
 from users.models import Follow
 
@@ -128,11 +128,19 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 class IngredientRecipeSerializer(serializers.ModelSerializer):
     """ Сериализатор связи ингридиентов и рецепта. """
-    id = IntegerField(write_only=True)
+    id = serializers.ReadOnlyField(source='ingredient.id')
+    name = serializers.ReadOnlyField(source='ingredient.name')
+    measurement_unit = serializers.ReadOnlyField(
+        source='ingredient.measurement_unit'
+    )
 
     class Meta:
         model = IngredientRecipe
-        fields = ('id', 'amount')
+        fields = ('id', 'name', 'measurement_unit', 'amount',)
+        validators = serializers.UniqueTogetherValidator(
+            queryset=IngredientRecipe.objects.all(),
+            fields=('recipe', 'ingredient')
+        )
 
 
 class CreateRecipeSerializer(serializers.ModelSerializer):
@@ -157,13 +165,9 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         ingredients_list = []
         for item in ingredients:
             ingredient = get_object_or_404(Ingredient, id=item.get('id'))
-            if ingredient in ingredients_list:
-                raise ValidationError(
-                    {'ingredients': 'Ингридиенты не могут повторяться'}
-                )
             if int(item['amount']) <= 0:
                 raise ValidationError(
-                    {'amount': 'Количество ингредиента должно быть больше 0'}
+                    {'amount': 'Количество ингредиентов должно быть больше 0'}
                 )
             ingredients_list.append(ingredient)
         return value
@@ -176,8 +180,6 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             )
         tags_list = []
         for tag in tags:
-            if tag in tags_list:
-                raise ValidationError({'tags': 'Теги не могут повторяться'})
             tags_list.append(tag)
         return value
 
@@ -186,7 +188,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         IngredientRecipe.objects.bulk_create(
             [
                 IngredientRecipe(
-                    ingredient=Ingredient.objects.get(id=ingredient.get('id')),
+                    ingredient=Ingredient.objects.get(id=ingredient['id']),
                     recipe=recipe,
                     amount=ingredient['amount'],
                 )
