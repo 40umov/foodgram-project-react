@@ -1,7 +1,8 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
-from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag
+# from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag
+from recipes.models import Ingredient, Recipe, Tag
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -45,53 +46,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filterset_class = RecipeFilter
 
     def get_serializer_class(self):
-        if self.request.method in ('POST', 'PATH'):
+        if self.request.method in ('POST', 'PATH',):
             return RecipeReadSerializer
         return CreateRecipeSerializer
-
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data,
-                                         partial=True)
-        serializer.is_valid(raise_exception=True)
-        ingredients = serializer.validated_data.pop('ingredients')
-        tags = serializer.validated_data.pop('tags')
-        IngredientRecipe.objects.filter(recipes=instance).delete()
-        Recipe.objects.filter(recipes=instance).delete()
-        instance.name = serializer.validated_data.pop('name')
-        instance.text = serializer.validated_data.pop('text')
-        if serializer.validated_data.get('image') is not None:
-            instance.image = serializer.validated_data.pop('image')
-        instance.cooking_time = serializer.validated_data.pop('cooking_time')
-        instance.tags.set(tags)
-        for ing in ingredients:
-            IngredientRecipe.objects.bulk_create([IngredientRecipe(
-                recipes=instance,
-                amount=ing['amount'],
-                ingredients=ing['ingredients'])])
-        self.perform_update(serializer)
-        return Response(serializer.data)
-
-    def get_serializer_context(self):
-        context = super(RecipeViewSet, self).get_serializer_context()
-        context.update({'request': self.request})
-        return context
-
-    def create(self, request, *args, **kwargs):
-        request.data['author'] = request.user
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        ingredients = serializer.validated_data.pop('ingredients')
-        instance = serializer.save(author=request.user)
-        for ing in ingredients:
-            IngredientRecipe.objects.bulk_create([IngredientRecipe(
-                ingredients=ing['ingredients'],
-                recipes=instance,
-                amount=ing['amount'])])
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def perform_create(self, serializer, *args, **kwargs):
-        serializer.save(serializer.validated_data)
 
 
 class UserViewSet(UserViewSet):

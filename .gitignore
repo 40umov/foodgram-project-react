@@ -180,3 +180,5 @@ trash/
 Prototype*.py
 prototype*.py
 */media/
+media/
+static/
