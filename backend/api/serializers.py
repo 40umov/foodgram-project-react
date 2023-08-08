@@ -126,7 +126,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             raise ValidationError('Ингредиенты не добавлены!')
         for ingredient in value:
             id = ingredient['id']
-            if not Ingredient.objects.filter(id=id):
+            if not Ingredient.objects.filter(id=id).exists():
                 raise ValidationError(
                     'Ингридиента нет в базе!'
                 )
@@ -135,29 +135,30 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
                     'Такой ингредиент уже добавлен!'
                 )
             ingredients_list.append(id)
-        return
+        return value
 
     def validate_tags(self, value):
         tags = value
         if not tags:
-            raise ValidationError({'tags': 'Должен быть выбран тег'})
+            # raise ValidationError({'tags': 'Должен быть выбран тег'})
+            raise ValidationError('Должен быть выбран тег')
         tags_list = []
         for tag in tags:
             tags_list.append(tag)
         return value
 
-    @transaction.atomic
-    def create_ingredients_amounts(self, ingredients, recipe):
-        IngredientRecipe.objects.bulk_create(
-            [
-                IngredientRecipe(
-                    ingredient=Ingredient.objects.get(id=ingredient['id']),
-                    recipe=recipe,
-                    amount=ingredient['amount'],
-                )
-                for ingredient in ingredients
-            ]
-        )
+    # @transaction.atomic
+    # def create_ingredients_amounts(self, ingredients, recipe):
+    #     IngredientRecipe.objects.bulk_create(
+    #         [
+    #             IngredientRecipe(
+    #                 ingredient=Ingredient.objects.get(id=ingredient['id']),
+    #                 recipe=recipe,
+    #                 amount=ingredient['amount'],
+    #             )
+    #             for ingredient in ingredients
+    #         ]
+    #     )
 
     @transaction.atomic
     def create(self, validated_data):
