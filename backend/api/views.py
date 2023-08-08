@@ -24,7 +24,7 @@ from .serializers import (CreateRecipeSerializer, IngredientSerializer,
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
-    ''' Вывод ингредиентов. '''
+    """ Вывод ингредиентов. """
     serializer_class = IngredientSerializer
     queryset = Ingredient.objects.all()
     permission_classes = (IsAdminOrReadOnly, )
@@ -35,7 +35,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class TagViewSet(viewsets.ModelViewSet):
-    ''' Вывод тегов. '''
+    """ Вывод тегов. """
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (IsAdminOrReadOnly, )
@@ -43,11 +43,12 @@ class TagViewSet(viewsets.ModelViewSet):
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
+    """ Вывод работы с рецептами. """
     queryset = Recipe.objects.all()
     serializer_class = CreateRecipeSerializer
-    permission_classes = (IsAuthorModeratorAdminOrReadOnly, )
+    permission_classes = (IsAuthorModeratorAdminOrReadOnly,)
     pagination_class = CustomPagination
-    filter_backends = (DjangoFilterBackend, )
+    filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
 
     def perform_create(self, serializer):
@@ -76,7 +77,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def shopping_cart(self, request, pk):
         if request.method == 'POST':
             return self.add_to(ShoppingCart, request.user, pk)
-        return self.delete_from(ShoppingCart, request.user, pk)
+        else:
+            return self.delete_from(ShoppingCart, request.user, pk)
 
     def add_to(self, model, user, pk):
         if model.objects.filter(user=user, recipe__id=pk).exists():
@@ -112,9 +114,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             .values(
                 'ingredient__name',
                 'ingredient__measurement_unit',
-                'recipe__image',
             )
-            .annotate(amount=Sum('amount'))
+            .annotate(amount=Sum('amount')).order_by()
         )
 
         today = datetime.today()
@@ -124,9 +125,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
         shopping_list += '\n'.join(
             [
-                f"- {ingredient['ingredient__name']} "
-                f"({ingredient['ingredient__measurement_unit']})"
-                f" - {ingredient['amount']}"
+                f'- {ingredient["ingredient__name"]} '
+                f'({ingredient["ingredient__measurement_unit"]})'
+                f' - {ingredient["amount"]}'
                 for ingredient in ingredients
             ]
         )
@@ -149,8 +150,9 @@ class UserViewSet(UserViewSet):
         permission_classes=[IsAuthenticated],
     )
     def subscribe(self, request, **kwargs):
-        user = get_object_or_404(User, username=request.user)
-        author = get_object_or_404(User, id=self.kwargs.get('id'))
+        user = request.user
+        author_id = self.kwargs.get('id')
+        author = get_object_or_404(User, id=author_id)
 
         if request.method == 'POST':
             serializer = SubscribeListSerializer(
@@ -170,7 +172,7 @@ class UserViewSet(UserViewSet):
     @action(detail=False, permission_classes=[IsAuthenticated])
     def subscriptions(self, request):
         user = request.user
-        queryset = User.objects.filter(subscribing__user=user)
+        queryset = User.objects.filter(following__user=user)
         pages = self.paginate_queryset(queryset)
         serializer = SubscribeListSerializer(
             pages, many=True, context={'request': request}

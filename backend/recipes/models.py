@@ -21,15 +21,15 @@ class Ingredient(models.Model):
     )
 
     class Meta:
-        ordering = ('name',)
+        # ordering = ('name',)
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
-        constraints = (
-            models.UniqueConstraint(
-                fields=('name', 'measurement_unit'),
-                name='unique_ingredient'
-            ),
-        )
+        # constraints = (
+        #     models.UniqueConstraint(
+        #         fields=('name', 'measurement_unit'),
+        #         name='unique_ingredient'
+        #     ),
+        # )
 
     def __str__(self):
         return f'{self.name}, {self.measurement_unit}'
