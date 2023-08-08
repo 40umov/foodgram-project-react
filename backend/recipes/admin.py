@@ -34,14 +34,6 @@ class TagAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
-# class RecipeAdmin(admin.ModelAdmin):
-#     """ Админ панель управление рецептами """
-#     list_display = ('author', 'name', 'cooking_time')
-#     search_fields = ('name', 'author', 'tags')
-#     list_filter = ('author', 'name', 'tags')
-#     empty_value_display = '-пусто-'
-
-
 class FavoriteAdmin(admin.ModelAdmin):
     """ Админ панель управление подписками. """
     list_display = ('user', 'recipe')

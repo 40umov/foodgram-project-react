@@ -90,12 +90,6 @@ WSGI_APPLICATION = 'foodgram.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
 if DEBUG:
     DATABASES = {
         'default': {
@@ -181,14 +175,6 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-
-# django-filter settings
-
-# FILTERS_BACKEND = 'django_filters.rest_framework.backends.DjangoFilterBackend'
-
-# DEFAULT_FILTER_BACKENDS = [
-#     FILTERS_BACKEND,
-# ]
-
 MEDIA_URL = "/media/"
+
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")

@@ -1,5 +1,4 @@
 import json
-# import os
 
 from django.core.management.base import BaseCommand
 
@@ -12,9 +11,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write(self.style.WARNING('Start command'))
 
-        # with open(
-        #     os.path.abspath('data/ingredients.json')
-        # ) as data_file_ingredients:
         with open('data/ingredients.json', encoding='utf-8',
                   ) as data_file_ingredients:
             ingredient_data = json.loads(data_file_ingredients.read())
