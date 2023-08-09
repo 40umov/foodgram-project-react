@@ -1,7 +1,24 @@
 from django.contrib.auth import get_user_model
+from rest_framework import permissions
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 User = get_user_model()
+
+
+# class AuthorIsRequestUserPermission(permissions.BasePermission):
+#     ''' Изменять и добавлять объекты может только их автор. '''
+
+#     def has_object_permission(self, request, view, obj):
+#         return (request.method in permissions.SAFE_METHODS
+#                 or obj.author == request.user)
+
+
+class AuthorPermission(permissions.BasePermission):
+    ''' Изменять и добавлять объекты может только их автор. '''
+
+    def has_object_permission(self, request, view, obj):
+        return (request.method in permissions.SAFE_METHODS
+                or obj.author == request.user)
 
 
 class IsAdminOrReadOnly(BasePermission):

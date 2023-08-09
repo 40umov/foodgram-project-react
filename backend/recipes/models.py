@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
-from django.db.models import UniqueConstraint
+# from django.db.models import UniqueConstraint
 
 User = get_user_model()
 
@@ -129,11 +129,11 @@ class Favorite(models.Model):
     class Meta:
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
-        constraints = [
-            UniqueConstraint(
-                fields=['user', 'recipe'], name='unique_favourite'
-            )
-        ]
+        # constraints = [
+        #     UniqueConstraint(
+        #         fields=['user', 'recipe'], name='unique_favourite'
+        #     )
+        # ]
 
     def __str__(self):
         return f'{self.user} :: {self.recipe}'
@@ -157,11 +157,11 @@ class ShoppingCart(models.Model):
     class Meta:
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзина'
-        constraints = [
-            UniqueConstraint(
-                fields=['user', 'recipe'], name='unique_shopping_cart'
-            )
-        ]
+        # constraints = [
+        #     UniqueConstraint(
+        #         fields=['user', 'recipe'], name='unique_shopping_cart'
+        #     )
+        # ]
 
     def __str__(self):
         return f'{self.user} :: {self.recipe}'
