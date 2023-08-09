@@ -143,7 +143,6 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 class CreateRecipeSerializer(serializers.ModelSerializer):
     """ Сериализатор для создания рецепта. """
-    # ingredients = IngredientRecipeSerializer(many=True)
     ingredients = IngredientRecipeSerializer(
         many=True,
         source='ingredienttorecipe')
@@ -158,15 +157,6 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-    #     fields = ('ingredients', 'tags', 'image',
-    #               'name', 'text', 'cooking_time',
-    #               )
-
-    # def to_representation(self, instance):
-    #     return RecipeReadSerializer(
-    #         instance,
-    #         context={'request': self.context.get('request')}
-    #     ).data
         fields = (
             'id', 'tags', 'author', 'ingredients',
             'is_favorited', 'is_in_shopping_cart',
