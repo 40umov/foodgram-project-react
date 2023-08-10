@@ -3,8 +3,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Sum
 from django.http import HttpResponse
 from djoser.views import UserViewSet
-from recipes.models import (Ingredient, Recipe, Tag, Favorite,
-                            ShoppingCart, IngredientRecipe)
+from recipes.models import (Favorite, Ingredient, IngredientRecipe,
+                            Recipe, ShoppingCart, Tag)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -14,11 +14,11 @@ from users.models import Follow, User
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPagination
 # from .permissions import IsAdminOrReadOnly, IsAuthorModeratorAdminOrReadOnly
-from .permissions import IsAdminOrReadOnly, AuthorPermission
-from .serializers import (CreateRecipeSerializer, IngredientSerializer,
-                          RecipeReadSerializer, SubscribeListSerializer,
-                          TagSerializer, UserSerializer, FavoriteSerializer,
-                          ShoppingCartSerializer)
+from .permissions import AuthorPermission, IsAdminOrReadOnly
+from .serializers import (CreateRecipeSerializer, FavoriteSerializer,
+                          IngredientSerializer, RecipeReadSerializer,
+                          ShoppingCartSerializer, SubscribeListSerializer,
+                          TagSerializer, UserSerializer)
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -60,6 +60,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return CreateRecipeSerializer
 
     @action(detail=False, methods=['GET'])
+    # @action(detail=False, permission_classes=[IsAuthenticated])
     def download_shopping_cart(self, request):
         """Метод для скачивания списка покупок."""
         ingredients = IngredientRecipe.objects.filter(
@@ -74,8 +75,29 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 f"({ingredient['ingredient__measurement_unit']}) - "
                 f"{ingredient['sum']}")
         file = 'shopping_list.txt'
+        # user = request.user
+        # ingredients = (
+        #     IngredientRecipe.objects.filter(
+        #         recipe__shopping_cart__user=request.user
+        #     )
+        #     .values(
+        #         'ingredient__name',
+        #         'ingredient__measurement_unit',
+        #     )
+        #     .annotate(amount=Sum('amount')).order_by()
+        # )
+        # shopping_list = (
+        #     [
+        #         f'- {ingredient["ingredient__name"]}: '
+        #         f' {ingredient["amount"]}'
+        #         f' {ingredient["ingredient__measurement_unit"]}.'
+        #         for ingredient in ingredients
+        #     ]
+        # )
+        # filename = f'{user}_shopping_list.txt'
         response = HttpResponse(shopping_list, content_type='text/plain')
         response['Content-Disposition'] = f'attachment; filename="{file}.txt"'
+        # response['Content-Disposition'] = f'attachment; filename={filename}'
         return response
 
 
@@ -151,7 +173,7 @@ class FavoriteViewSet(viewsets.ModelViewSet):
 
 
 class ShoppingCartViewSet(viewsets.ModelViewSet):
-    """ Вывод списка покупок """
+    """ Вывод списка покупок. """
     permission_classes = (IsAuthenticated, )
     queryset = ShoppingCart.objects.all()
     serializer_class = ShoppingCartSerializer
