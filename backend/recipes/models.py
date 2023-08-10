@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
-# from django.db.models import UniqueConstraint
 
 User = get_user_model()
 
@@ -20,16 +19,16 @@ class Ingredient(models.Model):
         verbose_name='Еденицы измерения'
     )
 
-    class Meta:
-        verbose_name = 'Ингредиент'
-        verbose_name_plural = 'Ингредиенты'
+    class Meta():
+        verbose_name = 'Ингридиенты'
+        verbose_name_plural = 'Ингридиенты'
 
     def __str__(self):
         return f'{self.name}, {self.measurement_unit}'
 
 
 class Tag(models.Model):
-    """ Модель тегов."""
+    """ Модель тегов. """
     name = models.CharField(
         verbose_name='Название тега',
         max_length=200,
@@ -129,11 +128,6 @@ class Favorite(models.Model):
     class Meta:
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
-        # constraints = [
-        #     UniqueConstraint(
-        #         fields=['user', 'recipe'], name='unique_favourite'
-        #     )
-        # ]
 
     def __str__(self):
         return f'{self.user} :: {self.recipe}'
@@ -157,11 +151,6 @@ class ShoppingCart(models.Model):
     class Meta:
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзина'
-        # constraints = [
-        #     UniqueConstraint(
-        #         fields=['user', 'recipe'], name='unique_shopping_cart'
-        #     )
-        # ]
 
     def __str__(self):
         return f'{self.user} :: {self.recipe}'
@@ -178,7 +167,7 @@ class IngredientRecipe(models.Model):
         Recipe,
         verbose_name='Рецепт',
         on_delete=models.CASCADE,
-        related_name='ingerdienttorecipe'
+        related_name='ingredienttorecipe'
     )
     amount = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(100)],
@@ -189,12 +178,6 @@ class IngredientRecipe(models.Model):
         ordering = ('-id', )
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты рецепта'
-        constraints = (
-            models.UniqueConstraint(
-                fields=('ingredient', 'recipe'),
-                name='unique_ingredients_recipe'
-            ),
-        )
 
     def __str__(self):
         return (
