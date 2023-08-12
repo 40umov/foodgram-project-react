@@ -173,6 +173,7 @@ cython_debug/
 
 # My files and directorys
 my_lib_install.sh
+restart.sh
 Prototype/
 prototype/
 Trash/
