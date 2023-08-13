@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'i^_!daw#c+k(5&67d*)*bjp#qc#!8y0oz@xt$4n7tknbj7dhr4'
-SECRET_KEY = os.environ.get('SECRET_KEY', default='i^_!daw#c+k(5&67d*)*bjp#qc#!8y0oz@xt$4n7tknbj7dhr4')
+SECRET_KEY = os.getenv('SECRET_KEY', default='i^_!daw#c+k(5&67d*)*bjp#qc#!8y0oz@xt$4n7tknbj7dhr4')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -45,12 +45,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'colorfield',
     'django_filters',
     'djoser',
     'drf_yasg',
     'rest_framework',
     'rest_framework.authtoken',
+
     'api.apps.ApiConfig',
     'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig',
