@@ -1,10 +1,8 @@
 from colorfield.fields import ColorField
-from django.contrib.auth import get_user_model
 from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
-
-User = get_user_model()
+from users.models import User
 
 
 class Ingredient(models.Model):
@@ -170,7 +168,12 @@ class IngredientRecipe(models.Model):
         related_name='ingredienttorecipe'
     )
     amount = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(5000)],
+        validators=[
+            MinValueValidator(
+                1, message='Количество ингредиента должно быть больше 1'),
+            MaxValueValidator(
+                5000, message='Количество ингредиента должно быть меньше 5000')
+        ],
         verbose_name='Количество ингредиента'
     )
 
