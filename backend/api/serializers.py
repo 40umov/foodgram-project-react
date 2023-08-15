@@ -158,18 +158,10 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             'name', 'image', 'text', 'cooking_time',)
 
     def validate_ingredients(self, ingredients):
-        ingredients_list = []
-        if not ingredients:
+        ingredients_ids = [ingredient['id'] for ingredient in ingredients]
+        if len(ingredients_ids) != len(set(ingredients_ids)):
             raise serializers.ValidationError(
-                'Отсутствуют ингридиенты')
-        for ingredient in ingredients:
-            if ingredient['id'] in ingredients_list:
-                raise serializers.ValidationError(
-                    'Ингридиенты должны быть уникальны')
-            ingredients_list.append(ingredient['id'])
-            if int(ingredient.get('amount')) < 1:
-                raise serializers.ValidationError(
-                    'Количество ингредиента больше 0')
+                'Ингредиенты должны быть уникальными')
         return ingredients
 
     @staticmethod
