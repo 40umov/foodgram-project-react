@@ -25,10 +25,8 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = IngredientSerializer
     queryset = Ingredient.objects.all()
     permission_classes = (IsAdminOrReadOnly, )
-    pagination_class = CustomPagination
     filter_backends = (IngredientFilter, )
     search_fields = ('^name', )
-    pagination_class = None
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -36,7 +34,6 @@ class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (IsAdminOrReadOnly, )
-    pagination_class = None
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -118,7 +115,6 @@ class FavoriteViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, )
     queryset = Favorite.objects.all()
     serializer_class = FavoriteSerializer
-    pagination_class = None
 
     def create(self, request, *args, **kwargs):
         data_my = {
