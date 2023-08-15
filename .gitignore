@@ -183,3 +183,4 @@ prototype*.py
 */media/
 media/
 static/
+infra/rebild_docker.sh
