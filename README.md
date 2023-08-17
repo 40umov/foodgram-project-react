@@ -13,4 +13,4 @@
 - почта: a@a.ru
 - пароль: 1
 ```
-# Deploing on the remote server #5
+# Deploing on the remote server #6
