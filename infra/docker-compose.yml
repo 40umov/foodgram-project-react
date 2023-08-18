@@ -7,7 +7,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ../.env
+      - ./.env
     restart: always
     ports:
       - "5432:5432"
@@ -22,7 +22,7 @@ services:
     depends_on:
       - db
     env_file:
-      - ../.env
+      - ./.env
     restart: always
     container_name: foodgram_backend
 
@@ -38,7 +38,6 @@ services:
     image: nginx:1.21.3-alpine
     ports:
       - "80:80"
-      - "443:443"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
