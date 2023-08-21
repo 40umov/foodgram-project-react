@@ -1,9 +1,9 @@
 ## Проект доступен по ссылкам:
 
 ```
-- http://84.201.164.41/
-- http://84.201.164.41/admin/
-- http://84.201.164.41/api/docs/
+- https://graduation.hopto.org
+- https://graduation.hopto.org/admin/
+- https://graduation.hopto.org/api/
 ```
 
 ## Учетная запись администратора:
@@ -13,4 +13,3 @@
 - почта: a@a.ru
 - пароль: 1
 ```
-# Deploing on the remote server #16
